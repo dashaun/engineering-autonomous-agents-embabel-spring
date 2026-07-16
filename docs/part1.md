@@ -206,7 +206,7 @@ Likely questions:
 
 ## Exercise 1 — Build DICE (15 Minutes)
 
-Open `IncidentRunbook.assess`.
+Open `IncidentRunbook.assess()`.
 
 1. Put metrics, logs, and unavailable services into `evidence`.
 2. Use the `IncidentType` enum to select policy.
