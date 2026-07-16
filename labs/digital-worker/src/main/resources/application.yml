@@ -1,0 +1,63 @@
+spring:
+  application:
+    name: digital-worker
+  main:
+    web-application-type: none
+  ai:
+    retry:
+      max-attempts: 2
+      backoff:
+        initial-interval: 250ms
+        max-interval: 1s
+        multiplier: 2
+    model:
+      chat: ollama
+    ollama:
+      base-url: http://localhost:11434
+      chat:
+        model: qwen2.5-coder:1.5b
+        options:
+          temperature: 0.2
+  shell:
+    interactive:
+      enabled: true
+
+workshop:
+  compose-file: ../../docker-compose.yml
+  ollama:
+    request-timeout: 300s
+
+management:
+  tracing:
+    enabled: true
+    sampling:
+      # The workshop needs every short-lived shell command to be visible.
+      probability: 1.0
+  otlp:
+    metrics:
+      export:
+        url: ${OTEL_EXPORTER_OTLP_METRICS_ENDPOINT:http://localhost:4318/v1/metrics}
+        step: 5s
+  opentelemetry:
+    resource-attributes:
+      service.name: ${spring.application.name}
+      service.namespace: embabel-workshop
+      # LGTM maps this semantic attribute to Prometheus's instance label.
+      # Its JVM dashboard filters every panel by that label.
+      service.instance.id: ${OTEL_SERVICE_INSTANCE_ID:${random.uuid}}
+    tracing:
+      export:
+        schedule-delay: 1s
+        otlp:
+          endpoint: ${OTEL_EXPORTER_OTLP_TRACES_ENDPOINT:http://localhost:4318/v1/traces}
+    logging:
+      export:
+        schedule-delay: 1s
+        otlp:
+          endpoint: ${OTEL_EXPORTER_OTLP_LOGS_ENDPOINT:http://localhost:4318/v1/logs}
+
+logging:
+  level:
+    com.example.digitalworker: DEBUG
+    org.springframework.ai: INFO
+    org.springframework.ai.retry: ERROR
