@@ -48,52 +48,6 @@ cd labs/digital-worker
 ./mvnw -DskipTests package
 ```
 
-The exercise tests intentionally start red and become green as the TODOs are completed. Answer implementations live in the slides, not in the starter source.
-
-Serve the slides locally:
-
-```bash
-jwebserver -d docs -p 8000
-```
-
-Open <http://localhost:8000>. Press `S` for speaker notes.
-
-- `Down` / `Up` moves within the current module.
-- `Right` / `Left` jumps between Intro, Warmer, Part 1, Part 2, and Outro.
-- `Esc` opens the two-dimensional overview for direct shortcuts.
-
-After completing all five exercises, run the full local worker:
-
-```bash
-curl -fsS http://localhost:3000/api/health > /dev/null || \
-  docker compose up -d grafana-lgtm
-curl -fsS http://localhost:11434/api/tags > /dev/null || \
-  docker compose up -d ollama
-cd labs/digital-worker
-./mvnw spring-boot:run
-```
-
-If the companion presentation's LGTM stack or Ollama is already running, the workshop reuses it. Redis remains available but is not required by the timed lab.
-
-At the shell prompt, run `docker-compose-status`, `oom-incident`, or `latency-incident`.
-
-After an incident command, wait about five seconds and validate all three signals:
-
-```bash
-./scripts/validate-telemetry.sh
-```
-
-The script queries the Prometheus, Loki, and Tempo data sources configured in Grafana and prints one `OK` line for metrics, logs, and traces.
-
-## Repository Map
-
-```text
-docs/                       Reveal.js deck; answer slides follow exercises
-labs/digital-worker/        one progressive Spring Boot lab
-FACILITATOR_GUIDE.md        delivery, timing, and recovery notes
-COMPANION_ALIGNMENT.md      shared claims and intentional workshop evolution
-QUICK_REFERENCE.md          participant copy/paste reference
-docker-compose.yml          same Ollama, Redis, and Grafana stack as the companion
-```
+## Notes
 
 The small `BoundedActionPlanner` intentionally makes GOAP mechanics visible. The application uses Embabel RC1's real `@Agent`, `@Action`, `@AchievesGoal`, action cost, and retry policy APIs while Spring AI remains pinned to 2.0.0.
